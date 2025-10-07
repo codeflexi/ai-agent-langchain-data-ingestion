@@ -122,10 +122,11 @@ def compare_pdf_loaders(pdf_path: str) -> Dict[str, Any]:
             'metadata_keys': list(pypdf_docs[0].metadata.keys()) if pypdf_docs else []
         }
         print(f"  ✅ Loaded {len(pypdf_docs)} pages")
+        print(f"  📄 First page content (100 chars): {pypdf_docs[0].page_content[:100]}...")
     except Exception as e:
         results['pypdf'] = {'success': False, 'error': str(e)}
         print(f"  ❌ Error: {e}")
-    
+    print(results['pypdf'])
     # PyMuPDFLoader
     print("\nTesting PyMuPDFLoader...")
     try:
@@ -138,10 +139,13 @@ def compare_pdf_loaders(pdf_path: str) -> Dict[str, Any]:
             'metadata_keys': list(pymupdf_docs[0].metadata.keys()) if pymupdf_docs else []
         }
         print(f"  ✅ Loaded {len(pymupdf_docs)} pages")
+        print(f"  📄 First page content (100 chars): {pymupdf_docs[0].page_content[:100]}...")
     except Exception as e:
         results['pymupdf'] = {'success': False, 'error': str(e)}
         print(f"  ❌ Error: {e}")
-    
+    print(results['pymupdf'])
+
+   
     return results
 
 
@@ -179,6 +183,9 @@ def main():
     print("\n1. Comparing PDF Loaders:")
     print("-" * 70)
     comparison = compare_pdf_loaders(pdf_path)
+    print("\nComparison Results:")
+    for loader, result in comparison.items():
+        print(f"{loader}: {result}")
     
     # Process with SmartPDFProcessor
     print("\n2. Processing with SmartPDFProcessor:")
