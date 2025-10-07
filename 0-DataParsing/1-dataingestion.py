@@ -46,8 +46,8 @@ def demonstrate_document_structure():
         metadata={
             "source": "example.txt",
             "page": 1,
-            "author": "Krish Naik",
-            "date_created": "2024-01-01",
+            "author": "Nattapong Mahamart",
+            "date_created": "2025-10-01",
             "custom_field": "any_value"
         }
     )
@@ -64,7 +64,7 @@ def demonstrate_document_structure():
     print("- Providing context in responses")
     print("- Debugging and auditing")
 
-demonstrate_document_structure()
+
 
 # ============================================================================
 # SECTION 2: Creating Sample Text Files
@@ -108,10 +108,100 @@ Types of Machine Learning:
 Applications include image recognition, speech processing, and recommendation systems"""
     }
     
+    # Loops to Write sample text files
     for filepath, content in sample_texts.items():
         with open(filepath, 'w', encoding="utf-8") as f:
             f.write(content)
     
     print("✅ Sample text files created!")
 
-create_sample_text_files()
+
+
+# ============================================================================
+# SECTION 3: TextLoader - Reading Single Files
+# ============================================================================
+
+def load_single_text_file():
+    """Demonstrate loading a single text file"""
+    print("\n" + "="*70)
+    print("SECTION 3: TextLoader - Reading Single File")
+    print("="*70)
+    
+    # Loading a single text file
+    loader = TextLoader("data/txt_files/python_intro.txt", encoding="utf-8")
+    documents = loader.load()
+    
+    print(f"\n📄 Loaded {len(documents)} document")
+    print(f"Content preview: {documents[0].page_content[:400]}...")
+    print(f"Metadata: {documents[0].metadata}")
+   
+    
+    return documents
+
+# ============================================================================
+# SECTION 4: DirectoryLoader - Loading Multiple Text Files
+# ============================================================================
+
+def load_directory_text_files():
+    """Demonstrate loading multiple text files from a directory"""
+    print("\n" + "="*70)
+    print("SECTION 4: DirectoryLoader - Loading Multiple Files")
+    print("="*70)
+    
+    # Load all text files from directory
+    dir_loader = DirectoryLoader(
+        "data/txt_files",
+        glob="**/*.txt",  # Pattern to match files
+        loader_cls=TextLoader,  # Loader class to use
+        loader_kwargs={'encoding': 'utf-8'},
+        show_progress=True
+    )
+    
+    documents = dir_loader.load()
+    
+    print(f"\n📁 Loaded {len(documents)} documents")
+    for i, doc in enumerate(documents):
+        print(f"\nDocument {i+1}:")
+        print(f"  Source: {doc.metadata['source']}")
+        print(f"  Length: {len(doc.page_content)} characters")
+    
+    # Analysis
+    print("\n📊 DirectoryLoader Characteristics:")
+    print("✅ Advantages:")
+    print("  - Loads multiple files at once")
+    print("  - Supports glob patterns")
+    print("  - Progress tracking")
+    print("  - Recursive directory scanning")
+    
+    print("\n❌ Disadvantages:")
+    print("  - All files must be same type")
+    print("  - Limited error handling per file")
+    print("  - Can be memory intensive for large directories")
+    
+    return documents
+
+
+# ============================================================================
+# MAIN EXECUTION
+# ============================================================================
+
+def main():
+    """Main function to run all demonstrations"""
+    print("\n" + "="*70)
+    print("DATA INGESTION FOR RAG SYSTEMS")
+    print("="*70)
+    
+    # Section 1: Document structure
+    demonstrate_document_structure()
+    
+    # Section 2: Create sample files
+    create_sample_text_files()
+
+    # Section 3: Load single file
+    load_single_text_file()
+
+      # Section 4: Load directory
+    load_directory_text_files()
+
+if __name__ == "__main__":
+    main()
