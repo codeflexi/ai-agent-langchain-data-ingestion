@@ -180,6 +180,144 @@ def load_directory_text_files():
     
     return documents
 
+# ============================================================================
+# SECTION 5: Text Splitting Strategies
+# ============================================================================
+
+def demonstrate_character_text_splitter(text):
+    """Demonstrate CharacterTextSplitter with different separators"""
+    print("\n" + "="*70)
+    print("SECTION 5a: Character Text Splitter")
+    print("="*70)
+    
+    # Method 1: Split on spaces
+    print("\n1️⃣ CHARACTER TEXT SPLITTER (separator=' ')")
+    char_splitter = CharacterTextSplitter(
+        separator=" ",
+        chunk_size=200,
+        chunk_overlap=20,
+        length_function=len
+    )
+    
+    char_chunks = char_splitter.split_text(text)
+    print(f"Created {len(char_chunks)} chunks")
+    print(f"First chunk: {char_chunks[0][:100]}...")
+    
+    print("\nFirst two chunks:")
+    print(char_chunks[0])
+    print("-" * 50)
+    print(char_chunks[1])
+    
+  
+    
+    # Method 2: Split on newlines
+    print("\n\n1️⃣ CHARACTER TEXT SPLITTER (separator='\\n')")
+    char_splitter_newline = CharacterTextSplitter(
+        separator="\n",
+        chunk_size=200,
+        chunk_overlap=20,
+        length_function=len
+    )
+    
+    char_chunks_newline = char_splitter_newline.split_text(text)
+    print(f"Created {len(char_chunks_newline)} chunks")
+    
+    print("\nFirst three chunks:")
+    for i in range(min(3, len(char_chunks_newline))):
+        print(char_chunks_newline[i])
+        if i < 2:
+            print("-" * 50)
+def demonstrate_recursive_text_splitter(text):
+    """Demonstrate RecursiveCharacterTextSplitter"""
+    print("\n" + "="*70)
+    print("SECTION 5b: Recursive Character Text Splitter")
+    print("="*70)
+    
+    print("\n2️⃣ RECURSIVE CHARACTER TEXT SPLITTER")
+    recursive_splitter = RecursiveCharacterTextSplitter(
+        separators=[" "],
+        chunk_size=200,
+        chunk_overlap=20,
+        length_function=len
+    )
+    
+    recursive_chunks = recursive_splitter.split_text(text)
+    print(f"Created {len(recursive_chunks)} chunks")
+    print(f"First chunk: {recursive_chunks[0][:100]}...")
+    
+    print("\nFirst three chunks:")
+    for i in range(min(3, len(recursive_chunks))):
+        print(recursive_chunks[i])
+        if i < 2:
+            print("-" * 50)
+    
+    # Demonstrate overlap with simple example
+    print("\n\nSimple overlap example:")
+    simple_text = "This is sentence one and it is quite long. This is sentence two and it is also quite long. This is sentence three which is even longer than the others. This is sentence four. This is sentence five. This is sentence six."
+    
+    splitter = RecursiveCharacterTextSplitter(
+        separators=[" ", "\n","","\n\n"],
+        chunk_size=80,
+        chunk_overlap=20,
+        length_function=len
+    )
+    
+    chunks = splitter.split_text(simple_text)
+    print(f"\nSimple text example - {len(chunks)} chunks:\n")
+    
+    for i in range(len(chunks) - 1):
+        print(f"Chunk {i+1}: '{chunks[i]}'")
+        print(f"Chunk {i+2}: '{chunks[i+1]}'")
+        print()
+
+def demonstrate_token_text_splitter(text):
+    """Demonstrate TokenTextSplitter"""
+    print("\n" + "="*70)
+    print("SECTION 5c: Token Text Splitter")
+    print("="*70)
+    
+    print("\n3️⃣ TOKEN TEXT SPLITTER")
+    token_splitter = TokenTextSplitter(
+        chunk_size=50,
+        chunk_overlap=10
+    )
+    
+    token_chunks = token_splitter.split_text(text)
+    print(f"Created {len(token_chunks)} chunks")
+    print(f"First chunk: {token_chunks[0][:100]}...")
+
+    for i in range(len(token_chunks)):
+        print(f"Chunk {i}: '{token_chunks[i]}'")
+        print()
+
+
+def compare_splitting_methods():
+    """Print comparison of text splitting methods"""
+    print("\n" + "="*70)
+    print("TEXT SPLITTING METHODS COMPARISON")
+    print("="*70)
+    
+    print("\n📊 Text Splitting Methods Comparison:")
+    
+    print("\nCharacterTextSplitter:")
+    print("  ✅ Simple and predictable")
+    print("  ✅ Good for structured text")
+    print("  ❌ May break mid-sentence")
+    print("  Use when: Text has clear delimiters")
+    
+    print("\nRecursiveCharacterTextSplitter:")
+    print("  ✅ Respects text structure")
+    print("  ✅ Tries multiple separators")
+    print("  ✅ Best general-purpose splitter")
+    print("  ❌ Slightly more complex")
+    print("  Use when: Default choice for most texts")
+    
+    print("\nTokenTextSplitter:")
+    print("  ✅ Respects model token limits")
+    print("  ✅ More accurate for embeddings")
+    print("  ❌ Slower than character-based")
+    print("  Use when: Working with token-limited models")
+
 
 # ============================================================================
 # MAIN EXECUTION
@@ -200,8 +338,20 @@ def main():
     # Section 3: Load single file
     load_single_text_file()
 
-      # Section 4: Load directory
-    load_directory_text_files()
+    # Section 4: Load directory
+    documents = load_directory_text_files()
+    
+    # Section 5: Text splitting strategies
+    if documents:
+        text = documents[0].page_content
+        demonstrate_character_text_splitter(text)
+        demonstrate_recursive_text_splitter(text)
+        demonstrate_token_text_splitter(text)
+        compare_splitting_methods()
+    
+    print("\n" + "="*70)
+    print("DEMONSTRATION COMPLETED!")
+    print("="*70)
 
 if __name__ == "__main__":
     main()
